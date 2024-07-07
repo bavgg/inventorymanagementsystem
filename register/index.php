@@ -1,11 +1,5 @@
 <?php
 
-if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    $message =  isset($_GET['message']) ? $_GET['message'] : null;
-    $error = isset($_GET['error']) ? $_GET['error'] : null;
-}
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,14 +13,14 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
 <body>
     <h1>Inventory Management System</h1>
-    <form method="post" action="/db/actions/login.php">
-        <label for="email">Username:</label>
+    <form method="post" action="/db/actions/insert-user.php">
+        <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
 
         <br>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
         <br>
-        <button type="submit">Login</button>
+        <button type="submit">Register</button>
     </form>
 </body>

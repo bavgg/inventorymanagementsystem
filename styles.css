@@ -77,6 +77,55 @@
   a {
     color: black;
   }
+
+  /* table */
+
+  table {
+    display: block;
+    max-width: 100%;
+    margin: 0 auto 1rem;
+    border-collapse: collapse;
+    border-spacing: 0;
+    inline-size: fit-content;
+    overflow-x: auto
+}
+
+.table-responsive {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(0,1fr));
+    overflow-x: auto
+}
+
+.table-responsive table {
+    display: table
+}
+
+caption {
+    margin-top: .5rem;
+    caption-side: bottom;
+    color: var(--muted)
+}
+
+tbody>tr:nth-child(2n) {
+    background: var(--bg-muted)
+}
+
+td,th {
+    padding: .375rem .8125rem;
+    border: 1px solid var(--bd-muted)
+}
+
+th {
+    border-color: var(--bg-contrast);
+    background: var(--bg-subtle);
+    font-weight: 700
+}
+
+table.center td,th {
+    text-align: center
+}
+
+/* table */
   
   :root,
   [data-color-scheme="light"] {
@@ -87,6 +136,9 @@
     --ct-width: 1024px;
   
     --bg-color: white;
+    --bd-muted: #d0d7deb3;
+    --bg-subtle: #d0d7de;
+    --bg-contrast: #24292f;
   
     --bd-style: solid;
     --bd-muted: black;
