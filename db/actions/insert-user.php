@@ -6,22 +6,16 @@ use Database\Connection;
 
 $conn = new Connection();
 $conn = $conn->getConnection();
-// -------------------------------------------------------------------------- //
-//                                 user input                                 //
-// -------------------------------------------------------------------------- //
+
 $username = $_POST['username'];
 $password_hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-// -------------------------------------------------------------------------- //
-//                              sql - create user                             //
-// -------------------------------------------------------------------------- //
+
 $query = "INSERT INTO Users (username, password_hash) VALUES (?, ?)";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("ss", $username, $password_hash);
 
-// -------------------------------------------------------------------------- //
-//                                 set session                                //
-// -------------------------------------------------------------------------- //
+
 if ($stmt->execute()) {
     $last_id = $conn->insert_id;
 

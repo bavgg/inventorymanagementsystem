@@ -105,12 +105,19 @@ function Sidebar() {
     `;
 }
 function CreateUser() {
+  setTimeout(() => {
+    const RegisterForm = document.getElementById('register-form');
+
+    RegisterForm.addEventListener('click', (event) => {
+      event.preventDefault();
+    });
+  }, 0);
   return `
     <h1>Create User</h1>
 
     
 
-    <form method="post" action="/register/action.php" style="margin-top: 200px;">
+    <form id="register-form" method="post" action="/db/actions/insert-user.php" style="margin-top: 200px;">
         <label for="email">Username:</label>
         <input type="text" id="username" name="username" required>
 
