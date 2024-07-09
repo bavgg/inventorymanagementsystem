@@ -9,15 +9,5 @@
 </head>
 
 <body>
-    <h1>Inventory Management System</h1>
-    <form method="post" action="/db/actions/insert-user.php">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <button type="submit">Register</button>
-    </form>
+    <script src="/register/register.js"></script>
 </body>

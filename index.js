@@ -117,7 +117,7 @@ function CreateUser() {
 
     
 
-    <form id="register-form" method="post" action="/db/actions/insert-user.php" style="margin-top: 200px;">
+    <form id="register-form" method="post" style="margin-top: 200px;">
         <label for="email">Username:</label>
         <input type="text" id="username" name="username" required>
 
@@ -139,6 +139,8 @@ async function deleteUser() {
     },
     body: JSON.stringify({}),
   });
+
+
 }
 function ActionColumn(user) {
   setTimeout(() => {
@@ -157,7 +159,9 @@ function ActionColumn(user) {
             <button id="ad-${user.id}" >Delete</button>
     `;
 }
-function UserList(users) {
+async function UserList() {
+  const users = await fetch('db/data/fetch-users.php');
+
   const TableData = users
     .map((user) => {
       return `
@@ -171,19 +175,11 @@ function UserList(users) {
       `;
     })
     .join("");
-  return `
-    <h1>User List</h1>
-
-    <table class="center">
-      <thead>
-
-        <tr><th>Username</th><th>Password_hash</th><th>Action</th></tr>
-      </thead>
-      <tbody>
-        ${TableData} 
-      </tbody>
-    </table>
-    `;
+    const TableBody = document.createElement('tbody');
+    TableBody.innerHTML = TableData;
+  
+    const TableContainer = document.getElementById('table-container');
+    TableContainer.appendChild(TableBody);
 }
 function Main() {
   return `
@@ -192,7 +188,16 @@ function Main() {
         ${CreateUser()}
       </div>
       <div>
-        ${UserList(users)}
+        <h1>User List</h1>
+
+        <table class="center" id="table-container">
+          <thead>
+
+            <tr><th>Username</th><th>Password_hash</th><th>Action</th></tr>
+          </thead>
+          
+          <!-- tbody here -->
+        </table>
       </div>
     </main>
     `;

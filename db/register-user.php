@@ -7,15 +7,11 @@ use Database\Connection;
 $conn = new Connection();
 $conn = $conn->getConnection();
 
-$user = file_get_contents('php://input');
-
-$user = json_decode($user, true);
-
-$username = $user['username'];
-$password_hash = password_hash($user['password'], PASSWORD_DEFAULT);
+$username = $_POST['username'];
+$password_hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
 try {
-    $query = "INSERT INTO Users (username, password_hash) VALUES (?, ?)";
+    $query = "INSERT INTO Ussers (username, password_hash) VALUES (?, ?)";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ss", $username, $password_hash);
     if ($stmt->execute()) {
@@ -23,10 +19,10 @@ try {
 
         $_SESSION['username'] = $username;
         $_SESSION['user_id'] = $last_id;
-        echo json_encode(['success' => true, 'message' => 'Registration successful']);
 
+        header("Location: /");
     } else {
-        echo json_encode(['success' => false, 'message' => 'Execution failed']);
+        header("Location: /signup?error=$error");
     }
 
     $stmt->close();
