@@ -14,6 +14,8 @@ function Form() {
         alert(data.message);
         if (data.success) {
           window.location.href = "/";
+        }else {
+          window.location.href = "/register";
         }
       });
   }

@@ -17,7 +17,7 @@ $password = $_POST['password'];
 // -------------------------------------------------------------------------- //
 //                              sql - read users                              //
 // -------------------------------------------------------------------------- //
-$query = "SELECT * FROM Users WHERE username = ?";
+$query = "SELECT * FROM users WHERE username = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $username);
 $stmt->execute();
@@ -30,7 +30,7 @@ $user = $result->fetch_assoc();
 if ($user && password_verify($password, $user['password_hash'])) {
 
     $_SESSION['username'] = $user['username'];
-    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['user_id'] = $user['user_id'];
     header("Location: /");
     exit;
 } else {

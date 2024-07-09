@@ -54,17 +54,6 @@ echo "<script>const users = " . json_encode($users) . ";</script>";
             padding: 16px;
         }
 
-        .sidebar a {
-            padding: 8px 32px 8px 16px;
-            text-decoration: none;
-            color: var(--muted);
-            display: block;
-            transition: 0.3s;
-        }
-
-        .sidebar a:hover {
-            color: var(--accent);
-        }
 
         .profile {
             margin-bottom: 20px;
@@ -78,16 +67,16 @@ echo "<script>const users = " . json_encode($users) . ";</script>";
             margin-top: 20px;
         }
 
-        .da {
+        .link {
             display: flex;
-            gap: 5px;
+            gap: 20px;
             align-items: center;
             /* background-color: var(--tint); */
             padding: 10px;
             border-radius: var(--bd-radius);
         }
 
-        .da:hover {
+        .link:hover {
             background-color: var(--tint);
         }
 
@@ -121,17 +110,16 @@ echo "<script>const users = " . json_encode($users) . ";</script>";
             background-color: var(--tint);
         }
 
-        .da svg {
-            cursor: pointer;
-        }
-
-        .da {
-            cursor: pointer;
-        }
 
         #signout {
             margin-top: auto;
             cursor: pointer;
+        }
+        #links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            height: 100%;
         }
     </style>
 
