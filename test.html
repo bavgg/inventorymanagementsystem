@@ -1,11 +1,16 @@
 <script>
   const url = "https://api.sampleapis.com/coffee/hot";
 
+  
   fetch(url)
   .then(response => response.json())
   .then(data => {
     console.log('Data received:', data);
   });
+
+  setTimeout(() => {
+    console.log('loaded');
+  }, 0);
 
   console.log('test');
 

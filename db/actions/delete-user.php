@@ -5,12 +5,14 @@ use Database\Connection;
 
 $conn = new Connection();
 $conn = $conn->getConnection();
+$user = file_get_contents('php://input');
+$user = json_decode($user, true);
+$user_id = $user['user_id'];
 
 try {
-    $id = $_POST['id'];
     $query = "DELETE FROM Users WHERE user_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $id);
+    $stmt->bind_param("i", $user_id);
 
     if ($stmt->execute()) {
         $rowsAffected = $stmt->affected_rows;

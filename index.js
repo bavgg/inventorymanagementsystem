@@ -66,6 +66,7 @@ function Chevron() {
 
 function Sidebar() {
   document.addEventListener("DOMContentLoaded", () => {
+    console.log('lo');
     const Links = document.getElementById("links");
     Links.addEventListener("click", (event) => {
       const clickedEl = event.target;
@@ -149,9 +150,10 @@ function UserForm() {
         }
       });
   }
-  document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(() => {
     const form = document.getElementById("register-form");
 
+    console.log('loadeedeedd');
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
@@ -160,7 +162,8 @@ function UserForm() {
 
       createUser({ username, password });
     });
-  });
+  }, 0);
+
   return `
     <h1>Create User</h1>
 
@@ -179,51 +182,62 @@ function UserForm() {
     `;
 }
 
-async function deleteUser() {
-  const url = ``;
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-type": "application/json",
-    },
-    body: JSON.stringify({}),
-  });
-}
-function ActionColumn(user) {
-  // setTimeout(() => {
-  //   const EditLink = document.getElementById(`ae-${user.user_id}`);
-  //   const DeleteLink = document.getElementById(`ad-${user.user_id}`);
-
-  //   // EditLink.addEventListener( (event) => {
-
-  //   // });
-  //   DeleteLink.addEventListener("click", (event) => {
-  //     alert(`Are you sure you want to delete user id ${user.username}`);
-  //   });
-  // }, 0);
-  return `
-            <button id="ae-${user.user_id}" >Edit</button>
-            <button id="ad-${user.user_id}" >Delete</button>
-    `;
-}
-async function UserList() {
-  document.addEventListener("DOMContentLoaded", () => {
-    const LoadingContainer = document.getElementById("table-container");
-
-    LoadingContainer.innerHTML = "Loading...";
-  });
+async function deleteUser(user_id) {
+  const url = `/db/actions/delete-user.php`;
 
   try {
-    console.log("start");
-    const response = await fetch("db/data/fetch-users.php");
-    console.log(response);
-    if (!response.ok) {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({ user_id }),
+    });
+
+    if(!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
+    alert(data.message);
+    if(data.success) {
+      UserList();
+    }
 
-    console.log("end");
+  }catch(error) {
+    console.error("Fetch error:", error);
+  }
+  
+}
+function ActionColumn(user) {
+  return `
+            <button data-user-id="${user.user_id}" class="edit-btn"  >Edit</button>
+            <button data-user-id="${user.user_id}" class="delete-btn">Delete</button>
+    `;
+}
+async function UserList() {
+  
+  try {
+    const response = await fetch("db/data/fetch-users.php");
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    setTimeout(() => {
+      const ttbody = document.getElementById('ttbody');
+
+      ttbody.addEventListener('click', (event) => {
+        if (event.target.classList.contains('delete-btn')) {
+          const user_id = event.target.dataset.userId;
+          deleteUser(user_id);
+        }
+        
+      });
+
+    }, 0);
+    
     const users = data.users;
 
     const TableData = users
@@ -273,7 +287,7 @@ function UserPage() {
 
         <!-- ASYNC -->
         <!-- ASYNC -->
-        <div id="table-container"></div>
+        <div id="table-container">Loading...</div>
         <!-- ASYNC -->
         <!-- ASYNC -->
 
