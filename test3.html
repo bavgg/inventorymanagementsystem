@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="./styles.css" />
+
+<dialog open style="border-radius: var(--bd-radius)">
+  <form method="dialog" style="padding: 10px">
+    <h3>Update</h3>
+    <label>Firstname</label>
+    <input required />
+
+    <label>Lastname</label>
+    <input required />
+
+    <label>Email address</label>
+    <input required />
+    <br>
+    <div style="display: flex">
+      <button
+        type="button"
+        id="cancelButton"
+        style="background-color: white; color: #2ba9bc"
+      >
+        Cancel
+      </button>
+      <button type="submit">Ok</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+  const dialog = document.querySelector("dialog");
+  const cancelButton = document.getElementById("cancelButton");
+
+  cancelButton.addEventListener("click", () => {
+    dialog.close();
+  });
+</script>

@@ -1,23 +1,27 @@
 function Form() {
   function createUser(user) {
     const url = "/db/actions/insert-user.php";
-
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(user),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        alert(data.message);
-        if (data.success) {
-          window.location.href = "/";
-        }else {
-          window.location.href = "/register";
-        }
-      });
+    try {
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(user),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          alert(data.message);
+          if (data.success) {
+            window.location.href = "/";
+          }else {
+            window.location.href = "/register";
+          }
+        });
+    }catch(error) {
+      console.error('Error ', error);
+    }
+    
   }
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -26,22 +30,33 @@ function Form() {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const username = document.getElementById("username").value;
+      const email = document.getElementById("email").value;
+      const first_name = document.getElementById("firstname").value;
+      const last_name = document.getElementById("lastname").value;
       const password = document.getElementById("password").value;
 
-      createUser({ username, password });
+      createUser({ email, first_name, last_name, password });
     });
   });
 
   return `
     <form id="form" method="post" action="/db/actions/insert-user.php">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" required>
 
         <br>
+        <label for="firstname">Firstname:</label>
+        <input type="text" id="firstname" name="firstname" required>
+        <br>
+
+        <label for="lastname">Lastname:</label>
+        <input type="text" id="lastname" name="lastname" required>
+        <br>
+
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
         <br>
+
         <button type="submit">Register</button>
     </form>
     `;

@@ -11,17 +11,21 @@ $user = file_get_contents('php://input');
 
 $user = json_decode($user, true);
 
-$username = $user['username'];
+
+$email = $user['email'];
+$first_name = $user['first_name'];
+$last_name = $user['last_name'];
 $password_hash = password_hash($user['password'], PASSWORD_DEFAULT);
 
+
 try {
-    $query = "INSERT INTO Users (username, password_hash) VALUES (?, ?)";
+    $query = "INSERT INTO users (email, first_name, last_name, password_hash) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ss", $username, $password_hash);
+    $stmt->bind_param("ssss", $email, $first_name, $last_name, $password_hash);
     if ($stmt->execute()) {
         $last_id = $conn->insert_id;
 
-        $_SESSION['username'] = $username;
+        $_SESSION['email'] = $email;
         $_SESSION['user_id'] = $last_id;
         echo json_encode(['success' => true, 'message' => 'Registration successful']);
 

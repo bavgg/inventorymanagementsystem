@@ -13,7 +13,7 @@ function toggleNav() {
   const sidebarLinks = document.querySelectorAll(".sidebar a");
   sidebarLinks.forEach((link) => {
     if (link.style.display === "none") {
-      link.style.display = "block";
+      link.style.display = "flex";
     } else {
       link.style.display = "none";
     }
@@ -22,7 +22,7 @@ function toggleNav() {
   const chevrons = document.querySelectorAll(".chevron");
   chevrons.forEach((chevron) => {
     if (chevron.style.display === "none") {
-      chevron.style.display = "block";
+      chevron.style.display = "flex";
     } else {
       chevron.style.display = "none";
     }
@@ -131,6 +131,7 @@ function Sidebar() {
       </div>
     `;
 }
+
 function UserForm() {
   function createUser(user) {
     const url = "/db/actions/insert-user.php";
@@ -157,10 +158,12 @@ function UserForm() {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const username = document.getElementById("username").value;
+      const email = document.getElementById("email").value;
+      const first_name = document.getElementById("firstname").value;
+      const last_name = document.getElementById("lastname").value;
       const password = document.getElementById("password").value;
 
-      createUser({ username, password });
+      createUser({ email, first_name, last_name, password });
     });
   }, 0);
 
@@ -170,13 +173,22 @@ function UserForm() {
     
 
     <form id="register-form" method="post" style="margin-top: 200px;">
-        <label for="email">Username:</label>
-        <input type="text" id="username" name="username" required>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" required>
 
         <br>
+        <label for="firstname">Firstname:</label>
+        <input type="text" id="firstname" name="firstname" required>
+        <br>
+
+        <label for="lastname">Lastname:</label>
+        <input type="text" id="lastname" name="lastname" required>
+        <br>
+
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
         <br>
+
         <button type="submit">Register</button>
     </form>
     `;
@@ -209,12 +221,7 @@ async function deleteUser(user_id) {
   }
   
 }
-function ActionColumn(user) {
-  return `
-            <button data-user-id="${user.user_id}" class="edit-btn"  >Edit</button>
-            <button data-user-id="${user.user_id}" class="delete-btn">Delete</button>
-    `;
-}
+
 async function UserList() {
   
   try {
@@ -227,11 +234,24 @@ async function UserList() {
     const data = await response.json();
     setTimeout(() => {
       const ttbody = document.getElementById('ttbody');
+      const EditModalContainer = document.getElementById('emodal-container');
 
       ttbody.addEventListener('click', (event) => {
         if (event.target.classList.contains('delete-btn')) {
           const user_id = event.target.dataset.userId;
           deleteUser(user_id);
+        }
+
+        if (event.target.classList.contains('edit-btn')) {
+          
+          const user_id = event.target.dataset.userId;
+          const firstname = event.target.dataset.firstname;
+          const lastname = event.target.dataset.lastname;
+          const email = event.target.dataset.email;
+          console.log('clicked edit btn');
+
+          EditModalContainer.innerHTML = EditFormModal({firstname, lastname, email}, EditModalContainer);
+          // deleteUser(user_id);
         }
         
       });
@@ -244,10 +264,11 @@ async function UserList() {
       .map((user) => {
         return `
               <tr>
-                <td>${user.username}</td><td>${user.password_hash}</td>
+                <td>${user.email}</td><td>${user.first_name}</td><td>${user.last_name}</td><td>${user.created_at}</td><td>${user.updated_at}</td>
                 <td>
                   <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    ${ActionColumn(user)}
+                    <button data-user-id="${user.user_id}" data-firstname="${user.first_name}" data-lastname="${user.last_name}" data-email="${user.email}" class="edit-btn"  >Edit</button>
+                    <button data-user-id="${user.user_id}" class="delete-btn">Delete</button>
                   </div>
                 </td>
               </tr>
@@ -260,7 +281,7 @@ async function UserList() {
        <table class="center"  style="max-height: 80dvh;">
           <thead style="position: sticky; top: 0;">
 
-            <tr><th>Username</th><th>Password_hash</th><th>Action</th></tr>
+            <tr><th>Email</th><th>Firstname</th><th>Lastname</th><th>Created_at</th><th>Updated_at</th><th>Action</th></tr>
           </thead>
           <tbody id="ttbody">
              ${TableData}
@@ -294,11 +315,75 @@ function UserPage() {
       </div>
     `;
 }
+function EditFormModal(user, EditModalContainer) {
+  setTimeout(() => {
+    const cancelButton = document.getElementById('cancelButton');
+    cancelButton.addEventListener('click', () => {
+      console.log('clicked cancel');
+      EditModalContainer.innerHTML = ``;
+    })
+  }, 0);
+
+  
+  return `
+<style>
+  #emodal {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 200px;
+    z-index: 2;
+  }
+  #edit-overlay {
+     position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+  #cancelButton {
+    background-color: white;
+    color: var(--accent);
+  }
+  #cancelButton:hover {
+    background-color: var(--tint);
+    color: white;
+  }
+</style>
+<div id="edit-overlay"></div>
+<dialog id="emodal" open style="border-radius: var(--bd-radius)">
+  <form method="dialog" style="padding: 10px">
+    <h3>Update</h3>
+    <label>Firstname</label>
+    <input required value="${user.firstname}"/>
+
+    <label>Lastname</label>
+    <input required value="${user.lastname}"/>
+
+    <label>Email address</label>
+    <input required value="${user.email}"/>
+    <br>
+    <div style="display: flex">
+      <button
+        type="button"
+        id="cancelButton"
+      >
+        Cancel
+      </button>
+      <button type="submit">Ok</button>
+    </div>
+  </form>
+</dialog>
+  `
+}
 function IndexHTMLObject() {
   const div = document.createElement("div");
   div.style.display = "flex";
   
   div.innerHTML = `
+      <div id="emodal-container"></div>
       ${Sidebar()}
       <main id="main">
 

@@ -65,8 +65,8 @@
     color: var(--bg-color);
   }
   
-  p {
-    color: gray;
+  p, h1, h2, h3, label {
+    color: var(--bd-muted);
   }
   
   hr {
@@ -126,10 +126,40 @@ table.center td,th {
 }
 
 /* table */
+
+/* dialog */
+dialog>header:first-child {
+  padding: 0 1rem 1rem;
+  border-bottom: 1px solid var(--bd-muted);
+  margin-right: -1rem;
+  margin-left: -1rem
+}
+
+dialog>header:first-child>:is(h1,h2) {
+  font-size: 1.25rem
+}
+
+dialog>footer:last-child {
+  padding: 1rem 1rem 0;
+  border-top: 1px solid var(--bd-muted);
+  margin: 0-1rem
+}
+
+dialog>footer:last-child>form[method=dialog] {
+  padding: 0;
+  margin: 0;
+  background: 0 0
+}
+
+dialog::backdrop {
+  background: var(--backdrop)
+}
+
+/* dialog */
   
   :root,
   [data-color-scheme="light"] {
-    --accent: #85DEFE;
+    --accent: #2BA9BC;
     --tint: #D6F1F5;
     --light: #30b9cf;
   

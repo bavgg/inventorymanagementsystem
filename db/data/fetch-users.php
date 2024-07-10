@@ -7,7 +7,7 @@ $conn = new Connection();
 $conn = $conn->getConnection();
 
 try {
-    $query = "SELECT * FROM Users";
+    $query = "SELECT * FROM users";
     $result = $conn->query($query);
 
 
