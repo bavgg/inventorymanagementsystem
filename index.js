@@ -131,26 +131,52 @@ function Sidebar() {
       </div>
     `;
 }
+function createUser(user) {
+  const url = "/db/actions/insert-user.php";
 
-function UserForm() {
-  function createUser(user) {
-    const url = "/db/actions/insert-user.php";
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify(user),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      alert(data.message);
+      if (data.success) {
+        UserList();
+      }
+    });
+}
+async function updateUser(user) {
+  const url = `/db/actions/update-user.php`;
 
-    fetch(url, {
+  try {
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify(user),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        alert(data.message);
-        if (data.success) {
-          UserList();
-        }
-      });
+    });
+
+    if(!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    alert(data.message);
+    if(data.success) {
+      UserList();
+    }
+
+  }catch(error) {
+    console.error("Fetch error:", error);
   }
+}
+function UserForm() {
+  
   setTimeout(() => {
     const form = document.getElementById("register-form");
 
@@ -250,7 +276,7 @@ async function UserList() {
           const email = event.target.dataset.email;
           console.log('clicked edit btn');
 
-          EditModalContainer.innerHTML = EditFormModal({firstname, lastname, email}, EditModalContainer);
+          EditModalContainer.innerHTML = EditFormModal({firstname, lastname, email, user_id}, EditModalContainer);
           // deleteUser(user_id);
         }
         
@@ -315,18 +341,49 @@ function UserPage() {
       </div>
     `;
 }
+
 function EditFormModal(user, EditModalContainer) {
   setTimeout(() => {
-    const cancelButton = document.getElementById('cancelButton');
-    cancelButton.addEventListener('click', () => {
+    const CancelButton = document.getElementById('cancelButton');
+    const SubmitBtn = document.getElementById('submit-btn');
+    const EditForm = document.querySelector('#edit-form');
+
+    let formChanged = false;
+
+    SubmitBtn.disabled = true;
+    
+    CancelButton.addEventListener('click', () => {
       console.log('clicked cancel');
+      EditModalContainer.innerHTML = ``;
+    })
+
+    EditForm.addEventListener('input', function() {
+      formChanged = true;
+      SubmitBtn.disabled = false;
+    });
+
+    EditForm.addEventListener('submit', () => {
+      const email = document.getElementById('email').value;
+      const firstname = document.getElementById('firstname').value;
+      const lastname = document.getElementById('lastname').value;
+      
+      if(formChanged) {
+        updateUser({ email, firstname, lastname, user_id : user.user_id});
+      }
       EditModalContainer.innerHTML = ``;
     })
   }, 0);
 
-  
   return `
 <style>
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  button:disabled::before {
+    content: "🔒";
+    margin-right: 5px;
+  }
   #emodal {
     position: absolute;
     margin-left: auto;
@@ -354,25 +411,25 @@ function EditFormModal(user, EditModalContainer) {
 </style>
 <div id="edit-overlay"></div>
 <dialog id="emodal" open style="border-radius: var(--bd-radius)">
-  <form method="dialog" style="padding: 10px">
+  <form method="dialog" id="edit-form" style="padding: 10px">
     <h3>Update</h3>
     <label>Firstname</label>
-    <input required value="${user.firstname}"/>
+    <input id="firstname" required value="${user.firstname}"/>
 
     <label>Lastname</label>
-    <input required value="${user.lastname}"/>
+    <input id="lastname" required value="${user.lastname}"/>
 
     <label>Email address</label>
-    <input required value="${user.email}"/>
+    <input id="email" required value="${user.email}"/>
     <br>
-    <div style="display: flex">
+    <div style="display: flex; gap: 5px;">
       <button
         type="button"
         id="cancelButton"
       >
         Cancel
       </button>
-      <button type="submit">Ok</button>
+      <button id="submit-btn" type="submit">Ok</button>
     </div>
   </form>
 </dialog>
