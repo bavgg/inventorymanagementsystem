@@ -8,6 +8,7 @@ import {
   CartIcon,
   SignoutIcon,
 } from "./icons/icons.js";
+import { ProductMain } from "./index/Product.js";
 
 function toggleNav() {
   const sidebarLinks = document.querySelectorAll(".sidebar a");
@@ -87,7 +88,7 @@ function Sidebar() {
             console.log(clickedEl.id);
             break;
           case 'product':
-            console.log(clickedEl.id);
+            Main.innerHTML = ProductMain();
             break;
           case 'supplier':
             console.log(clickedEl.id);
@@ -215,7 +216,7 @@ function UserForm() {
         <input type="password" id="password" name="password" required>
         <br>
 
-        <button type="submit">Register</button>
+        <button type="submit">Add User</button>
     </form>
     `;
 }
@@ -366,7 +367,7 @@ function EditFormModal(user, EditModalContainer) {
       const email = document.getElementById('email').value;
       const firstname = document.getElementById('firstname').value;
       const lastname = document.getElementById('lastname').value;
-      
+
       if(formChanged) {
         updateUser({ email, firstname, lastname, user_id : user.user_id});
       }

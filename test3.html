@@ -1,35 +1,21 @@
-<link rel="stylesheet" href="./styles.css" />
-
-<dialog open style="border-radius: var(--bd-radius)">
-  <form method="dialog" style="padding: 10px">
-    <h3>Update</h3>
-    <label>Firstname</label>
-    <input required />
-
-    <label>Lastname</label>
-    <input required />
-
-    <label>Email address</label>
-    <input required />
-    <br>
-    <div style="display: flex">
+<tr>
+  <td>${user.email}</td>
+  <td>${user.first_name}</td>
+  <td>${user.last_name}</td>
+  <td>${user.created_at}</td>
+  <td>${user.updated_at}</td>
+  <td>
+    <div style="display: flex; flex-direction: column; align-items: flex-start">
       <button
-        type="button"
-        id="cancelButton"
-        style="background-color: white; color: #2ba9bc"
+        data-user-id="${user.user_id}"
+        data-firstname="${user.first_name}"
+        data-lastname="${user.last_name}"
+        data-email="${user.email}"
+        class="edit-btn"
       >
-        Cancel
+        Edit
       </button>
-      <button disabled type="submit">Ok</button>
+      <button data-user-id="${user.user_id}" class="delete-btn">Delete</button>
     </div>
-  </form>
-</dialog>
-
-<script>
-  const dialog = document.querySelector("dialog");
-  const cancelButton = document.getElementById("cancelButton");
-
-  cancelButton.addEventListener("click", () => {
-    dialog.close();
-  });
-</script>
+  </td>
+</tr>

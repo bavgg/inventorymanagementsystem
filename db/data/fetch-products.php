@@ -7,21 +7,21 @@ $conn = new Connection();
 $conn = $conn->getConnection();
 
 try {
-    $query = "SELECT * FROM users";
+    $query = "SELECT * FROM products";
     $result = $conn->query($query);
 
     if ($result === false) {
         echo json_encode(['success' => false, 'message' => "Query failed: " . $conn->error]);
     }
 
-    $users = [];
+    $products = [];
     while ($row = $result->fetch_assoc()) {
-        $users[] = $row;
+        $products[] = $row;
     }
 
     $result->close();
 
-    echo json_encode(['success' => true, 'users'=> $users]);
+    echo json_encode(['success' => true, 'products' => $products]);
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => "Query failed: " . $e]);
 }
