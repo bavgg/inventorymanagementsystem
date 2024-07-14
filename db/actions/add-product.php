@@ -12,19 +12,23 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 });
 
 try {
-    $user_json = file_get_contents('php://input');
-    $user = json_decode($user_json, true);
-    
-    $user_id = $user['user_id'];
-    $email = $user['email'];
-    $first_name = $user['firstname'];
-    $last_name = $user['lastname'];
+    $product = file_get_contents('php://input');
+    $product = json_decode($product, true);
 
-    $query = "UPDATE users SET email = ?, first_name = ?, last_name = ? WHERE user_id = ?";
+    $product_name = $product['product_name'];
+    $description = $product['description'];
+    $supplier = $product['supplier'];
+    $image_url = $product['image_url'];
+    $user_id = $_SESSION['user_id'];
+
+    $query = "INSERT INTO products (product_name, description, supplier, image_url, user_id) VALUES (?, ?, ?, ?, ?)" ;
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssss", $email, $first_name, $last_name, $user_id);
+    $stmt->bind_param("ssssi", $product_name, $description, $supplier, $image_url, $user_id);
+
     if ($stmt->execute()) {
-        echo json_encode(['success' => true, 'message' => 'User updated.']);
+
+        echo json_encode(['success' => true, 'message' => 'Product added.']);
+
     } else {
         echo json_encode(['success' => false, 'message' => 'Execution failed']);
     }

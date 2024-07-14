@@ -5,7 +5,7 @@ require($_SERVER['DOCUMENT_ROOT'] . '/db/connection.php');
 use Database\Connection;
 
 $conn = new Connection();
-$conn = $conn->getConnection();
+$conn = $conn->getConnection(); 
 
 $user = file_get_contents('php://input');
 

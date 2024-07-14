@@ -1,18 +1,87 @@
-<script>
-  const url = "https://api.sampleapis.com/coffee/hot";
+```
 
-  
-  fetch(url)
-  .then(response => response.json())
-  .then(data => {
-    console.log('Data received:', data);
-  });
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form Validation Example</title>
+<style>
+    .error {
+        color: red;
+    }
+</style>
+</head>
+<body>
+    <h2>Form Validation Example</h2>
+    <form id="myForm" onsubmit="return validateForm()">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        <span id="nameError" class="error"></span><br>
 
-  setTimeout(() => {
-    console.log('loaded');
-  }, 0);
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br>
+        <span id="emailError" class="error"></span><br>
 
-  console.log('test');
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required><br>
+        <span id="ageError" class="error"></span><br>
 
+        <input type="submit" value="Submit">
+    </form>
+    <img src="https://i.imgur.com/Y7wHHts">
 
-</script>
+    <script>
+        function validateForm() {
+            let name = document.getElementById('name').value.trim();
+            let email = document.getElementById('email').value.trim();
+            let age = document.getElementById('age').value.trim();
+
+            let nameError = document.getElementById('nameError');
+            let emailError = document.getElementById('emailError');
+            let ageError = document.getElementById('ageError');
+
+            let valid = true;
+
+            // Validate Name
+            if (name === '') {
+                nameError.textContent = 'Name is required';
+                valid = false;
+            } else {
+                nameError.textContent = '';
+            }
+
+            // Validate Email
+            if (email === '') {
+                emailError.textContent = 'Email is required';
+                valid = false;
+            } else if (!isValidEmail(email)) {
+                emailError.textContent = 'Invalid email format';
+                valid = false;
+            } else {
+                emailError.textContent = '';
+            }
+
+            // Validate Age
+            if (age === '') {
+                ageError.textContent = 'Age is required';
+                valid = false;
+            } else if (isNaN(age) || age <= 0) {
+                ageError.textContent = 'Age must be a valid number greater than zero';
+                valid = false;
+            } else {
+                ageError.textContent = '';
+            }
+
+            return valid;
+        }
+
+        function isValidEmail(email) {
+            // Simple email validation regex
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+    </script>
+</body>
+</html>
+
+```

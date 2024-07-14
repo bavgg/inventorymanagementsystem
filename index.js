@@ -11,7 +11,7 @@ import {
 import { ProductMain } from "./index/Product.js";
 
 function toggleNav() {
-  const sidebarLinks = document.querySelectorAll(".sidebar a");
+  const sidebarLinks = document.querySelectorAll(".sidebar a .link-text");
   sidebarLinks.forEach((link) => {
     if (link.style.display === "none") {
       link.style.display = "flex";
@@ -39,15 +39,7 @@ function Logout(Icon, text) {
     `;
 }
 
-function Link(Icon, text, id) {
-  return `  
-        <a href="#" class="link" id="${id}">
-          ${Icon}
-          ${text}
-          ${Chevron()}
-        </a>
-    `;
-}
+
 
 function Chevron() {
   setTimeout(() => {
@@ -67,22 +59,29 @@ function Chevron() {
 
 function Sidebar() {
   document.addEventListener("DOMContentLoaded", () => {
-    console.log('lo');
+
     const Links = document.getElementById("links");
+
     Links.addEventListener("click", (event) => {
       const clickedEl = event.target;
+      console.log(clickedEl);
 
-      if (clickedEl.classList.contains("link")) {
-        document.querySelectorAll(".link").forEach((el) => {
+      if (clickedEl.classList.contains("link") || clickedEl.classList.contains("link-text")
+      ) {
+        const Links = document.querySelectorAll(".link");
+        const parentOfClickedEl = clickedEl.closest('.link');
+        console.log(clickedEl);
+
+        Links.forEach((el) => {
           el.classList.remove("selected");
         });
-        clickedEl.classList.add("selected");
+        parentOfClickedEl.classList.add("selected");
 
         const Main = document.getElementById('main');
 
-        switch(clickedEl.id) {
+        switch(parentOfClickedEl.id) {
           case 'dashboard':
-            
+            console.log(clickedEl.id);
             break;
           case 'reports':
             console.log(clickedEl.id);
@@ -114,12 +113,10 @@ function Sidebar() {
         <div class="toggle-container">
             <button class="togglebtn" onclick="toggleNav()">&#9776;</button>
         </div>
-        <div class="container-link profile">
-          ${ProfileIcon}
-          <a href="#">John Doe</a>
-        </div>
+      
 
         <div id="links">
+          ${Link(ProfileIcon, "John Doe", 'profile')}
           ${Link(DashboardIcon, "Dashboard", 'dashboard')}
           ${Link(ReportsIcon, "Reports", 'reports')}
           ${Link(ProductIcon, "Product", 'product')}
@@ -130,6 +127,14 @@ function Sidebar() {
         </div>
         
       </div>
+    `;
+}
+function Link(Icon, text, id) {
+  return `  
+        <a href="#" class="link" id="${id}">
+          ${Icon}
+          <p class="link-text">${text}</p>
+        </a>
     `;
 }
 function createUser(user) {
@@ -175,6 +180,120 @@ async function updateUser(user) {
   }catch(error) {
     console.error("Fetch error:", error);
   }
+}
+function UserModalForm() {
+  const style = `
+  <style>
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+    button:disabled::before {
+      content: "🔒";
+      margin-right: 5px;
+    }
+    #emodal {
+      position: absolute;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 200px;
+      z-index: 2;
+    }
+    #edit-overlay {
+       position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+    #cancelButton {
+      background-color: white;
+      color: var(--accent);
+    }
+    #cancelButton:hover {
+      background-color: var(--tint);
+      color: white;
+    }
+  </style>
+  `;
+setTimeout(() => {
+  const CancelButton = document.getElementById("cancelButton");
+  const ProductForm = document.querySelector("#product-form");
+  const ModalContainer = document.getElementById('modal-container');
+
+  CancelButton.addEventListener("click", () => {
+    console.log("clicked cancel");
+    ModalContainer.innerHTML = ``;
+  });
+
+
+  ProductForm.addEventListener("submit", (event) => {
+      const image_url = document.getElementById('product-image-url').value;
+      const product_name = document.getElementById("product-name").value;
+      const description = document.getElementById("description").value;
+      const supplier = document.getElementById("supplier").value;
+      // user_id
+
+      const imgUrlErrorContainer = document.getElementById('img-url-error');
+
+      if(validateURL(image_url))  {
+          if(isImageUrl(image_url)) {
+              createProduct({ product_name, description, supplier, image_url });
+              ModalContainer.innerHTML = ``;
+          }else {
+              event.preventDefault();
+              imgUrlErrorContainer.textContent = 'Invalid Image URL'
+          }
+          
+      }else {
+          event.preventDefault();
+          imgUrlErrorContainer.textContent = 'Invalid Image URL'
+          // ModalContainer.innerHTML = ``;
+      }
+
+      
+  });
+}, 0);
+
+return `
+  ${style}
+  <div id="edit-overlay"></div>
+  <dialog id="emodal" open style="border-radius: var(--bd-radius)">
+
+    <form  method="dialog" id="product-form" style="padding: 10px; display: flex; flex-direction: column;">
+
+      <h3>Create User</h3>
+      <label>Product Name</label>
+      <input id="product-name" required />
+  
+      <label>Description</label>
+      <textarea id="description" rows="4" required style="resize: vertical;"></textarea>
+  
+      <label>Suppliers</label>
+      <select id="supplier">
+          <option>Robinson</option>
+          <option>Nestle</option>
+      </select>
+
+      <label>Product Image URL</label>
+      <input id="product-image-url" required placeholder="Paste image url here" />
+      <span id="img-url-error" required style="color: red;"></span>
+      <br>
+
+      <br>
+      <div style="display: flex; gap: 5px;">
+        <button
+          type="button"
+          id="cancelButton"
+        >
+          Cancel
+        </button>
+        <button id="submit-btn" type="submit">Create Product</button>
+      </div>
+    </form>
+  </dialog>`;
 }
 function UserForm() {
   
@@ -261,7 +380,7 @@ async function UserList() {
     const data = await response.json();
     setTimeout(() => {
       const ttbody = document.getElementById('ttbody');
-      const EditModalContainer = document.getElementById('emodal-container');
+      const EditModalContainer = document.getElementById('modal-container');
 
       ttbody.addEventListener('click', (event) => {
         if (event.target.classList.contains('delete-btn')) {
@@ -326,18 +445,15 @@ async function UserList() {
 
 function UserPage() {
   UserList();
+//   <div>
+//   ${UserForm()}
+// </div>
   return `
-      <div>
-        ${UserForm()}
-      </div>
+
       <div>
         <h1>User List</h1>
 
-        <!-- ASYNC -->
-        <!-- ASYNC -->
         <div id="table-container">Loading...</div>
-        <!-- ASYNC -->
-        <!-- ASYNC -->
 
       </div>
     `;
@@ -441,7 +557,7 @@ function IndexHTMLObject() {
   div.style.display = "flex";
   
   div.innerHTML = `
-      <div id="emodal-container"></div>
+      <div id="modal-container"></div>
       ${Sidebar()}
       <main id="main">
 
