@@ -122,7 +122,7 @@ function validateURL(url) {
     const imageRegex = /\.(jpg|jpeg|png|gif|bmp|svg)$/i;
     return imageRegex.test(url);
 }
-function AddNewProductModalForm() {
+function ProductModalForm() {
     const style = `
     <style>
       button:disabled {
@@ -193,8 +193,6 @@ function AddNewProductModalForm() {
             imgUrlErrorContainer.textContent = 'Invalid Image URL'
             // ModalContainer.innerHTML = ``;
         }
-
-        
     });
   }, 0);
 
@@ -236,12 +234,12 @@ function AddNewProductModalForm() {
       </form>
     </dialog>`;
 }
-function AddNewProduct() {
+function AddNewProductBtn() {
     setTimeout(() => {
-        const AddNewProductBtn = document.getElementById('add-product-btn');
-        AddNewProductBtn.addEventListener('click', () => {
+        const addNewProductBtn = document.getElementById('add-product-btn');
+        addNewProductBtn.addEventListener('click', () => {
             const ModalContainer = document.getElementById('modal-container');
-            ModalContainer.innerHTML = AddNewProductModalForm();
+            ModalContainer.innerHTML = ProductModalForm();
         });
     }, 0);
     return `
@@ -253,7 +251,7 @@ export function ProductMain() {
         <div style="display: flex; flex-direction: column; gap: 10px;">
             ${Style()}
             <h1>List of Products</h1>
-            ${AddNewProduct()}
+            ${AddNewProductBtn()}
             ${ProductTable()}
         </div>
     `
