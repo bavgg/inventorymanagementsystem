@@ -42,7 +42,7 @@ function Form() {
   return `
     <form id="form" method="post" action="/db/actions/insert-user.php">
         <label for="email">Email:</label>
-        <input type="text" id="email" name="email" required>
+        <input type="email" id="email" name="email" autocomplete="email" required>
 
         <br>
         <label for="firstname">Firstname:</label>

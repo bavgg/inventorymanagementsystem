@@ -43,29 +43,42 @@ function UserTable() {
 }
 
 async function fetchUsersThenDisplayTableBody() {
-  try {
-    const response = await fetch("db/data/fetch-users.php");
+    try {
+        const response = await fetch("db/data/fetch-users.php");
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        const users = data.users;
+
+        const TableBody = document.getElementById("ttbody");
+        TableBody.innerHTML = TableRows(users);
+
+        // Remove existing event listener to avoid multiple attachments
+        TableBody.removeEventListener("click", handleTableBodyClick);
+
+        // Add event listener to handle clicks on delete and edit buttons
+        TableBody.addEventListener("click", handleTableBodyClick);
+    } catch (error) {
+        console.error("Fetch error:", error);
+        throw error;
     }
+}
 
-    const data = await response.json();
-
-    const users = data.users;
-
-    const TableBody = document.getElementById("ttbody");
-    TableBody.innerHTML = TableRows(users);
-
+async function handleTableBodyClick(event) {
     const ModalContainer = document.getElementById("modal-container");
 
-    TableBody.addEventListener("click", (event) => {
-      if (event.target.classList.contains("delete-btn")) {
+    if (event.target.classList.contains("delete-btn")) {
+        event.stopPropagation(); // Stop event propagation to prevent multiple triggers
         const user_id = event.target.dataset.userId;
-        deleteUser(user_id);
-      }
+        console.log('delete btn');
+        await deleteUser(user_id); // Await deleteUser to ensure synchronous behavior
+    }
 
-      if (event.target.classList.contains("edit-btn")) {
+    if (event.target.classList.contains("edit-btn")) {
         const user_id = event.target.dataset.userId;
         const firstname = event.target.dataset.firstname;
         const lastname = event.target.dataset.lastname;
@@ -73,41 +86,40 @@ async function fetchUsersThenDisplayTableBody() {
         console.log("clicked edit btn");
 
         ModalContainer.innerHTML = EditFormModal(
-          { firstname, lastname, email, user_id },
-          ModalContainer
+            { firstname, lastname, email, user_id },
+            ModalContainer
         );
-      }
-    });
-  } catch (error) {
-    console.error("Fetch error:", error);
-    throw error;
-  }
+    }
 }
+
 async function deleteUser(user_id) {
-  const url = `/db/actions/delete-user.php`;
+    console.log('delete request');
+    const url = `/db/actions/delete-user.php`;
 
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ user_id }),
-    });
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({ user_id }),
+        });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+        alert(data.message);
+        if (data.success) {
+            await fetchUsersThenDisplayTableBody(); // Await fetchUsersThenDisplayTableBody to ensure synchronous behavior
+        }
+    } catch (error) {
+        console.error("Fetch error:", error);
     }
-
-    const data = await response.json();
-    alert(data.message);
-    if (data.success) {
-      fetchUsersThenDisplayTableBody();
-    }
-  } catch (error) {
-    console.error("Fetch error:", error);
-  }
 }
+
 
 function TableRows(users) {
   console.log("🚀 ~ TableRows ~ TableRows:", users);
@@ -280,7 +292,7 @@ function UserModalForm() {
         const last_name = document.getElementById("lastname").value;
         const password = document.getElementById("password").value;
   
-        createUser({ email, first_name, last_name, password });
+        createUserThenRerenderUserTable({ email, first_name, last_name, password });
         ModalContainer.innerHTML = ``;
     });
   }, 0);
@@ -323,23 +335,30 @@ function UserModalForm() {
       
     </dialog>`;
 }
-function createUser(user) {
+async function createUserThenRerenderUserTable(user) {
   const url = "/db/actions/insert-user.php";
 
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-type": "application/json",
-    },
-    body: JSON.stringify(user),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      alert(data.message);
-      if (data.success) {
-        fetchUsersThenDisplayTableBody();
-      }
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(user),
     });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    alert(data.message);
+    if (data.success) {
+      fetchUsersThenDisplayTableBody();
+    }
+  } catch (error) {
+    console.error("Fetch error:", error);
+  }
 }
 async function updateUser(user) {
   const url = `/db/actions/update-user.php`;

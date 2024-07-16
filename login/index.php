@@ -20,8 +20,8 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 <body>
     <h1>Inventory Management System</h1>
     <form method="post" action="/db/actions/login.php">
-        <label for="email">Username:</label>
-        <input type="text" id="username" name="username" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
 
         <br>
         <label for="password">Password:</label>

@@ -10,6 +10,7 @@ import {
 } from "./icons/icons.js";
 import { ProductMain } from "./index/Product.js";
 import { UserMain } from "./index/UserMain.js";
+import { SupplierMain } from "./index/SupplierMain.js";
 
 function toggleNav() {
   const sidebarLinks = document.querySelectorAll(".sidebar a .link-text");
@@ -31,32 +32,8 @@ function toggleNav() {
   });
 }
 
-function Logout(Icon, text) {
-  return `
-      <div class="link" id="signout">
-        ${Icon}
-        <a href="/logout">${text}</a>
-      </div>
-    `;
-}
 
 
-
-function Chevron() {
-  setTimeout(() => {
-    const ChevronRef = document.querySelector(".chevron");
-    if (ChevronRef) {
-      ChevronRef.addEventListener("click", () => {
-        ChevronRef.classList.add("selected");
-      });
-    }
-  }, 0);
-  return `
-      <div class="chevron">
-        &#8249;
-      </div>
-    `;
-}
 
 function Sidebar() {
   document.addEventListener("DOMContentLoaded", () => {
@@ -91,7 +68,7 @@ function Sidebar() {
             Main.innerHTML = ProductMain();
             break;
           case 'supplier':
-            console.log(clickedEl.id);
+            Main.innerHTML = SupplierMain();
             break;
           case 'purchase':
             console.log(clickedEl.id);
@@ -128,6 +105,16 @@ function Sidebar() {
         </div>
         
       </div>
+    `;
+}
+function Logout(Icon, text) {
+  return `
+          <a href="/logout" class="link" id="signout">
+            ${Icon}
+            <p class="link-text">${text}</p>
+          </a>
+
+
     `;
 }
 function Link(Icon, text, id) {
